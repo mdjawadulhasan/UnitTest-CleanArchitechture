@@ -15,6 +15,24 @@ namespace Infrastructure.Persistence
             _unitOfWork = unitOfWork;
         }
 
+       
+
+        public async Task<IReadOnlyList<Person>> GetAllPersons()
+        {
+            return await _unitOfWork.PersonRepository
+                        .Query()
+                        .Include(x => x.childs)
+                        .OrderBy(p => p.Name)
+                        .ToListAsync();
+        }
+
+
+
+
+
+
+
+
         public bool CreatePerson(Person person)
         {
 
@@ -32,15 +50,6 @@ namespace Infrastructure.Persistence
             }
             _unitOfWork.PersonRepository.Delete(personEntity);
             return _unitOfWork.Save();
-        }
-
-        public async Task<List<Person>> GetAllPersons()
-        {
-            return await _unitOfWork.PersonRepository
-                        .Query()
-                        .Include(x => x.childs)
-                        .OrderBy(p => p.Name)
-                        .ToListAsync();
         }
 
         public Person GetPersonById(Guid id)

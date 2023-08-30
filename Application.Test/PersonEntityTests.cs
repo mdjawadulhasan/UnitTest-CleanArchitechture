@@ -2,6 +2,7 @@
 using Domain.PersonEntity;
 using FluentAssertions;
 using Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
@@ -73,6 +74,8 @@ namespace Test
             var result = _personService.CreatePerson(person);
 
 
+           // _mockpersonRepository.Verify();  //checks all the verifiable
+           // _mockpersonRepository.Verify(p => p.Create(person),Times.Once);   //verify wheather the create is called or not 
             result.Should().Be(true);
 
         }
@@ -95,7 +98,7 @@ namespace Test
             isValid.Should().Be(ValidateModel(person));
 
 
-            var persons = MockPersonData.GenerateMockPersonData();
+            var persons = MockPersonData.GetMockPersonData();
             IQueryable<Person> queryablePersons = persons.AsQueryable();
 
             _mockpersonRepository.Setup(m => m.FindByCondition(It.IsAny<Expression<Func<Person, bool>>>()))
@@ -135,7 +138,7 @@ namespace Test
             };
 
 
-            var persons = MockPersonData.GenerateMockPersonData();
+            var persons = MockPersonData.GetMockPersonData();
             IQueryable<Person> queryablePersons = persons.AsQueryable();
 
             _mockpersonRepository.Setup(m => m.FindByCondition(It.IsAny<Expression<Func<Person, bool>>>()))
@@ -158,7 +161,7 @@ namespace Test
         public void PersonService_GetPersonById_ReturnValidPerson(string id)
         {
 
-            var persons = MockPersonData.GenerateMockPersonData();
+            var persons = MockPersonData.GetMockPersonData();
             IQueryable<Person> queryablePersons = persons.AsQueryable();
 
             _mockpersonRepository.Setup(m => m.FindByCondition(It.IsAny<Expression<Func<Person, bool>>>()))
@@ -180,21 +183,28 @@ namespace Test
         public void PersonService_GetAllPersons_ReturnListOfPersons()
         {
 
-            var persons = MockPersonData.GenerateMockPersonData();
+            var persons = MockPersonData.GetMockPersonData();
             IQueryable<Person> queryablePersons = persons.AsQueryable();
 
-            _mockpersonRepository.Setup(m => m.FindAll()).Returns(queryablePersons);
+            _mockpersonRepository.Setup(m => m.Query()).Returns(queryablePersons);
+
+           // _mockpersonRepository.Setup(x => x.FindAll()).Returns(queryablePersons.Include(p => p.childs));
+
+
+
+
             _unitOfWorkMock.Setup(m => m.PersonRepository).Returns(_mockpersonRepository.Object);
             _personService = new PersonService(_unitOfWorkMock.Object);
 
 
             var result = _personService.GetAllPersons().ToList();
-
+            var specificPerson = result.Where(x => x.Name == "Jawad").FirstOrDefault();
 
             result.Should().NotBeNull();
             result.Should().BeOfType<List<Person>>();
             result.Should().HaveCount(3);
-
+            specificPerson.childs.Should().NotBeNull();
+            specificPerson.childs.Should().HaveCount(2);
 
 
         }
@@ -207,7 +217,7 @@ namespace Test
 
             var personIdToDelete = Guid.Parse("0f8fad5b-d9cb-469f-a165-70867728950e");
 
-            var persons = MockPersonData.GenerateMockPersonData();
+            var persons = MockPersonData.GetMockPersonData();
             IQueryable<Person> queryablePersons = persons.AsQueryable();
 
             _mockpersonRepository.Setup(m => m.FindByCondition(It.IsAny<Expression<Func<Person, bool>>>()))
@@ -237,7 +247,7 @@ namespace Test
 
             var personId = Guid.Parse("0f8fad5b-d9cb-469f-a165-708677289500");
 
-            var persons = MockPersonData.GenerateMockPersonData();
+            var persons = MockPersonData.GetMockPersonData();
             IQueryable<Person> queryablePersons = persons.AsQueryable();
 
             _mockpersonRepository.Setup(m => m.FindByCondition(It.IsAny<Expression<Func<Person, bool>>>()))

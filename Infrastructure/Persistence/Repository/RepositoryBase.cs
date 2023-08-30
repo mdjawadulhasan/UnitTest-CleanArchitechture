@@ -12,10 +12,10 @@ namespace Infrastructure.Persistence.Repository
             dbContext = context;
         }
 
-        public IQueryable<T> FindAll() => dbContext.Set<T>().AsNoTracking();
+        public virtual IQueryable<T> Query() => dbContext.Set<T>();
 
-        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) =>
-            dbContext.Set<T>().Where(expression).AsNoTracking();
+        public  IQueryable<T> FindByCondition(Expression<Func<T, bool>> expression) =>
+            dbContext.Set<T>().Where(expression);
 
         public void Create(T entity) => dbContext.Set<T>().Add(entity);
 

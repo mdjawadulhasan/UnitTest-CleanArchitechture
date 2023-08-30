@@ -17,13 +17,13 @@ namespace Infrastructure.Persistence
 
         public bool CreatePerson(Person person)
         {
-            
+
             _unitOfWork.PersonRepository.Create(person);
             return _unitOfWork.Save();
 
         }
 
-        public bool DeletePerson(Guid  id)
+        public bool DeletePerson(Guid id)
         {
             var personEntity = GetPersonById(id);
             if (personEntity == null)
@@ -34,11 +34,13 @@ namespace Infrastructure.Persistence
             return _unitOfWork.Save();
         }
 
-        public List<Person> GetAllPersons()
+        public async Task<List<Person>> GetAllPersons()
         {
-            return _unitOfWork.PersonRepository.FindAll().Include(x => x.childs)
-                .OrderBy(p => p.Name)
-                .ToList();
+            return await _unitOfWork.PersonRepository
+                        .Query()
+                        .Include(x => x.childs)
+                        .OrderBy(p => p.Name)
+                        .ToListAsync();
         }
 
         public Person GetPersonById(Guid id)

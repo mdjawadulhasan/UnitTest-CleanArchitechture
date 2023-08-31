@@ -37,8 +37,6 @@ namespace Test
 
             _mockpersonRepository.Setup(x => x.Query()).Returns(persons);
 
-
-
             _unitOfWorkMock.Setup(m => m.PersonRepository).Returns(_mockpersonRepository.Object);
             _personService = new PersonService(_unitOfWorkMock.Object);
 

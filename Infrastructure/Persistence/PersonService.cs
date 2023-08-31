@@ -15,7 +15,7 @@ namespace Infrastructure.Persistence
             _unitOfWork = unitOfWork;
         }
 
-       
+
 
         public async Task<IReadOnlyList<Person>> GetAllPersons()
         {
@@ -41,33 +41,28 @@ namespace Infrastructure.Persistence
 
         }
 
-        public bool DeletePerson(Guid id)
-        {
-            var personEntity = GetPersonById(id);
-            if (personEntity == null)
-            {
-                throw new Exception("Person doesn't exist");
-            }
-            _unitOfWork.PersonRepository.Delete(personEntity);
-            return _unitOfWork.Save();
-        }
 
-        public Person GetPersonById(Guid id)
+
+        public async Task<Person> GetPersonById(Guid id)
         {
-            var result = _unitOfWork.PersonRepository.FindByCondition(person => person.Id.Equals(id))
-                 .FirstOrDefault();
+            var result = await _unitOfWork.PersonRepository.FindByCondition(person => person.Id.Equals(id))
+                 .FirstOrDefaultAsync();
             return result;
+
+
+
         }
 
         public bool UpdatePerson(Person person)
         {
-            var personEntity = GetPersonById(person.Id);
-            if (personEntity == null)
-            {
-                throw new Exception("Person doesn't exist");
-            }
-            _unitOfWork.PersonRepository.Update(person);
-            return _unitOfWork.Save();
+            throw new NotImplementedException();
         }
+
+        public bool DeletePerson(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 }

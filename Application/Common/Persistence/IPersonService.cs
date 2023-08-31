@@ -10,7 +10,7 @@ namespace Application.Common.Persistence
     public interface IPersonService
     {
         public Task<IReadOnlyList<Person>> GetAllPersons();
-        Person GetPersonById(Guid id);
+        public Task<Person> GetPersonById(Guid id);
         bool CreatePerson(Person person);
         bool UpdatePerson(Person person);
         bool DeletePerson(Guid  id);

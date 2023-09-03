@@ -34,8 +34,10 @@ namespace Test
 
             var persons = MockPersonData.GetMockPersonData().AsQueryable().BuildMock();
 
+            _mockpersonRepository.Setup(m => m.Query()).Callback(() =>
+            {
 
-            _mockpersonRepository.Setup(x => x.Query()).Returns(persons);
+            }).Returns(persons);
 
             _unitOfWorkMock.Setup(m => m.PersonRepository).Returns(_mockpersonRepository.Object);
             _personService = new PersonService(_unitOfWorkMock.Object);

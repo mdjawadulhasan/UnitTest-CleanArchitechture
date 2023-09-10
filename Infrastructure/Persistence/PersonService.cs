@@ -34,13 +34,13 @@ namespace Infrastructure.Persistence
             return _unitOfWork.Save();
         }
 
-        public async Task<List<Person>> GetAllPersons()
+        public List<Person> GetAllPersons()
         {
-            return await _unitOfWork.PersonRepository
+            return _unitOfWork.PersonRepository
                         .Query()
                         .Include(x => x.childs)
-                        .OrderBy(p => p.Name)
-                        .ToListAsync();
+                        .OrderBy(p => p.Name).ToList();
+                        
         }
 
         public Person GetPersonById(Guid id)
@@ -60,5 +60,7 @@ namespace Infrastructure.Persistence
             _unitOfWork.PersonRepository.Update(person);
             return _unitOfWork.Save();
         }
+
+      
     }
 }

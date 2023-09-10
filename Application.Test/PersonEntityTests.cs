@@ -197,7 +197,7 @@ namespace Test
             _personService = new PersonService(_unitOfWorkMock.Object);
 
 
-            var result = _personService.GetAllPersons().ToList();
+            var result = _personService.GetAllPersons();
             var specificPerson = result.Where(x => x.Name == "Jawad").FirstOrDefault();
 
             result.Should().NotBeNull();
